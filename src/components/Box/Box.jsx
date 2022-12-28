@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { color, space, layout, border, flexbox } from 'styled-system';
+import { color, space, layout, border, flexbox, position } from 'styled-system';
 
 const Box = styled.div`
   ${color}
@@ -7,6 +7,7 @@ const Box = styled.div`
   ${layout}
   ${border}
   ${flexbox}
+  ${position}
 `;
 
 export default Box;

@@ -1,112 +1,38 @@
 import { Component } from 'react';
-import shortid from 'shortid';
-import Section from './Section/Section';
-import ContactForm from './ContactForm/ContactForm';
-import ContactList from './ContactList/ContactList';
-import Filter from './Filter/Filter';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Searchbar from './Searchbar/Searchbar';
+import ImageGallery from './ImageGallery/ImageGallery';
+import { Container } from './App.styled';
 
 class App extends Component {
   state = {
-    contacts: [],
-    filter: '',
+    searchValue: '',
   };
 
-  componentDidUpdate() {
-    localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-  }
-
-  componentDidMount() {
-    if (JSON.parse(localStorage.getItem('contacts'))) {
-      this.setState({
-        contacts: JSON.parse(localStorage.getItem('contacts')),
-      });
-    }
-  }
-
-  addContact = (values, actions) => {
-    const { name, number } = values;
-    const contact = {
-      id: shortid.generate(),
-      name,
-      number,
-    };
-
-    if (this.chekExistName(name)) {
-      window.alert(name + ' is already in contacts');
-    } else if (this.chekExistNumber(number)) {
-      window.alert('Number ' + number + ' is already in contacts');
-    } else {
-      this.setState(prevState => ({
-        contacts: [contact, ...prevState.contacts],
-      }));
-      actions.resetForm();
-    }
-  };
-
-  chekExistName = name => {
-    const { contacts } = this.state;
-    const normalizeName = name.toLowerCase();
-    const existingContacts = contacts.filter(
-      contact => contact.name.toLowerCase() === normalizeName
-    );
-
-    if (existingContacts.length) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  chekExistNumber = number => {
-    const { contacts } = this.state;
-    const existingContacts = contacts.filter(
-      contact => contact.number === number
-    );
-
-    if (existingContacts.length) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  deleteContact = id => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== id),
-    }));
-  };
-
-  changeFilter = evt => {
+  handleSubmit = values => {
     this.setState({
-      filter: evt.currentTarget.value,
+      searchValue: values.search,
     });
   };
 
-  getFilteredContacts = () => {
-    const { contacts, filter } = this.state;
-    const normalizeFilterText = filter.toLowerCase();
-
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(normalizeFilterText)
-    );
-  };
-
   render() {
-    const { filter } = this.state;
-    const filteredContacts = this.getFilteredContacts();
     return (
-      <div>
-        <Section title="Phonebook">
-          <ContactForm onSubmit={this.addContact} />
-        </Section>
-        <Section title="Contacts">
-          <Filter filter={filter} onChange={this.changeFilter} />
-          <ContactList
-            contacts={filteredContacts}
-            onDelete={this.deleteContact}
-          />
-        </Section>
-      </div>
+      <Container>
+        <Searchbar onSubmit={this.handleSubmit} />
+        <ImageGallery searchValue={this.state.searchValue} />
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          pauseOnHover
+          theme="dark"
+        />
+      </Container>
     );
   }
 }
