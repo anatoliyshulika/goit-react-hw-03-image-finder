@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const API_KEY = '31319107-722dadb9eaa121b95e9a372a6';
+// const API_KEY = '';
 
 axios.defaults.baseURL = `https://pixabay.com/api/?key=${API_KEY}&image_type=photo&orientation=horizontal&safesearch=true`;
 

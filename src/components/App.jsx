@@ -38,16 +38,27 @@ class App extends Component {
 
       fetchData(searchValue, page, PER_PAGE)
         .then(res => {
+          this.totalPages = Math.ceil(res.totalHits / PER_PAGE);
+          const imgList = res.hits.map(
+            ({ webformatURL, largeImageURL, tags, id }) => ({
+              webformatURL,
+              largeImageURL,
+              tags,
+              id,
+            })
+          );
+          return imgList;
+        })
+        .then(imgList => {
           if (page === 1) {
             this.setState({
-              imgList: res.hits,
+              imgList,
               status: 'resolved',
             });
-            this.totalPages = Math.ceil(res.totalHits / PER_PAGE);
           }
           if (page > 1) {
             this.setState({
-              imgList: [...prevState.imgList, ...res.hits],
+              imgList: [...prevState.imgList, ...imgList],
               status: 'resolved',
             });
             scroll.scrollMore(576);
